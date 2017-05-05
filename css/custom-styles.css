@@ -22,6 +22,7 @@ body{
 }
 .navbar a, .dropdown-menu>li>a, .dropdown-menu>li>a:focus, .dropdown-menu>li>a:hover, .navbar-toggle{
 	color: #fff;
+	text-transform: uppercase;
 }
 .dropdown-menu{
     -webkit-box-shadow: none;
@@ -82,8 +83,8 @@ color: #6c63a2;
 .featured-content .block h2{color: #9d9d9d; font-size: 24px; line-height: 30px; padding-bottom: 25px;}
 .featured-content .block h3{color: #716a72; font-size: 19px; line-height: 24px; text-decoration: underline; padding-bottom: 22px;}
 .featured-content .block-content h3{color: #716a72; font-size: 19px; line-height: 24px; padding-bottom: 22px;}
-.btn{color: #fff; padding: 12px 10px; border-radius: 5px; background: #6c63a2; text-transform: uppercase; border:none; text-shadow: none;
-								letter-spacing: 2px; font-size: 17px;}
+.btn{color: #fff; border-radius: 5px; background: #6c63a2; text-transform: uppercase; border:none; text-shadow: none;
+								letter-spacing: 2px; font-size: 12px;}
 .btn:hover{background: #716a72; color: #fff;}
 
 /* Footer */
