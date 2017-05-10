@@ -241,10 +241,97 @@
 										}
 									}
 								?>
-								<br>
-								<h1>Создайте шаблон для автоматических транзакций</h1>
+								<hr>
+								<h1>Создайте шаблон для автоматических транзакций</h1><br>
 								<form class="form" method="post">
-								</form>
+									<div class="form-group">
+										<h3>Тип платежа: </h3>
+										<div class="radio" name="expence_type" id="expence_type">
+											<label><input type="radio" name="type" value="2" onchange="check()">Расходы</label>
+										</div>
+										<div class="radio" name="income_type" id="income_type">
+											<label><input type="radio" name="type" value="1" onchange="check()">Доходы</label>
+										</div>
+										<script>
+											function check(){
+											  var radio=document.getElementsByName("type");
+											  if (radio[0].checked){
+												$('#standart_incomes_categories').css('display', 'none');
+												$('#user_incomes_categories').css('display', 'none');
+												$('#standart_expences_categories').css('display', 'inline-block');
+												$('#user_expences_categories').css('display', 'inline-block');
+											  } else if (radio[1].checked){
+												$('#standart_expences_categories').css('display', 'none');
+												$('#user_expences_categories').css('display', 'none');
+												$('#standart_incomes_categories').css('display', 'inline-block');
+												$('#user_incomes_categories').css('display', 'inline-block');
+											 }
+											}
+										</script>
+									</div>
+									<div class="form-group">
+										<h3>Сумма: </h3>
+										<input type="number" class="form-control" id="amount" name="amount" maxlength="25">
+									</div>									
+									<div class="form-group">
+										<h3>Дата: </h3>
+										<input type="date" name="date" id="date" class="form-control" value="<?php echo date("Y-m-d");?>" min="2017-01-01" max="<?php echo date("Y-m-d");?>">
+									</div>
+									<div class="form-group">
+										<h3>Комментарий: </h3>
+										<input type="text" class="form-control" id="comment" name="comment" maxlength="30">	
+									</div>
+									<div class="form-group" style="display:none;" id="standart_incomes_categories">
+										<h3>Выбрать категорию дохода: </h3>
+										<select class="form-control" name="standart_incomes_categories">
+											<option></option>
+											<?php
+												$c = $db->query("SELECT name FROM standart_incomes_categories");
+												while ($data = $c->fetch_assoc()) {
+													echo '<option name="st_incomes_category" value="'.$data['name'].'">'.$data['name'].'</option>';
+												}
+											?>
+										</select>
+									</div>
+									<div class="form-group" style="display:none;" id="user_incomes_categories">
+										<h3>Ваши категории доходов: </h3>
+										<select class="form-control" name="user_incomes_categories">
+											<option></option>
+											<?php
+												$c = $db->query("SELECT name FROM user_incomes_categories WHERE user_id=$id");
+												while ($data = $c->fetch_assoc()) {
+													echo '<option name="u_incomes_category" value="'.$data['name'].'">'.$data['name'].'</option>';
+												}
+											?>
+										</select>
+									</div>										
+									<div class="form-group" style="display:none;" id="standart_expences_categories">
+										<h3>Выбрать категорию расходов: </h3>
+										<select class="form-control" name="standart_expences_categories">
+											<option></option>
+											<?php
+												$c = $db->query("SELECT name FROM standart_expences_categories");
+												while ($data = $c->fetch_assoc()) {
+													echo '<option name="st_expences_category" value="'.$data['name'].'">'.$data['name'].'</option>';
+												}
+											?>
+										</select>
+									</div>								
+									<div class="form-group" style="display:none;" id="user_expences_categories">
+										<h3>Ваши категории расходов: </h3>
+										<select class="form-control" name="user_expences_categories">
+											<option></option>
+											<?php
+												$c = $db->query("SELECT name FROM user_expences_categories WHERE user_id=$id");
+												while ($data = $c->fetch_assoc()) {
+													echo '<option name="u_expences_category" "value="'.$data['name'].'">'.$data['name'].'</option>';
+												}
+											?>
+										</select>
+									</div><br>									
+									<input type="submit" name="transaction_save" id="transaction_save" class="btn btn-default" value="Сохранить"/>
+									<input type="reset" class="btn btn-default"/>
+								</form><hr>
 							</div>
 						</div>
 					</div>

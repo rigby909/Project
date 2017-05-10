@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Май 07 2017 г., 16:34
+-- Время создания: Май 07 2017 г., 20:27
 -- Версия сервера: 5.5.35-log
 -- Версия PHP: 5.3.27
 
@@ -107,7 +107,7 @@ INSERT INTO `standart_incomes_categories` (`id`, `name`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `transactions` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `tr_id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
   `type` int(11) NOT NULL,
   `date` varchar(10) NOT NULL,
@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS `transactions` (
   `user_income_category` int(11) DEFAULT NULL,
   `user_expence_category` int(11) DEFAULT NULL,
   `comment` varchar(30) DEFAULT NULL,
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`tr_id`),
   KEY `type` (`type`,`st_income_category`,`st_expence_category`,`user_income_category`,`user_expence_category`),
   KEY `st_income_category` (`st_income_category`),
   KEY `st_expence_category` (`st_expence_category`),
@@ -125,19 +125,21 @@ CREATE TABLE IF NOT EXISTS `transactions` (
   KEY `user_expence_category` (`user_expence_category`),
   KEY `user_id` (`user_id`),
   KEY `user_id_2` (`user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=21 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=37 ;
 
 --
 -- Дамп данных таблицы `transactions`
 --
 
-INSERT INTO `transactions` (`id`, `user_id`, `type`, `date`, `amount`, `st_income_category`, `st_expence_category`, `user_income_category`, `user_expence_category`, `comment`) VALUES
+INSERT INTO `transactions` (`tr_id`, `user_id`, `type`, `date`, `amount`, `st_income_category`, `st_expence_category`, `user_income_category`, `user_expence_category`, `comment`) VALUES
 (15, 1, 1, '2017-05-04', 1200, 1, NULL, NULL, NULL, NULL),
 (16, 1, 1, '2017-05-05', 120, 3, NULL, NULL, NULL, NULL),
-(17, 1, 1, '2017-05-03', 100, NULL, NULL, 4, NULL, NULL),
 (18, 1, 2, '2017-05-05', 250, NULL, 13, NULL, NULL, NULL),
-(19, 1, 2, '2017-05-07', 100, NULL, NULL, NULL, 4, NULL),
-(20, 5, 1, '2017-05-01', 1000, NULL, NULL, 7, NULL, NULL);
+(20, 5, 1, '2017-05-01', 1000, NULL, NULL, 7, NULL, NULL),
+(21, 1, 2, '2017-04-26', 125, NULL, 9, NULL, NULL, NULL),
+(22, 1, 1, '2017-04-10', 246, 3, NULL, NULL, NULL, 'отдали долг'),
+(23, 1, 2, '2017-05-04', 1000, NULL, 9, NULL, NULL, ''),
+(36, 1, 1, '2017-04-28', 3600, 5, NULL, NULL, NULL, '');
 
 -- --------------------------------------------------------
 
@@ -213,7 +215,7 @@ CREATE TABLE IF NOT EXISTS `users_balance` (
 --
 
 INSERT INTO `users_balance` (`id`, `user_id`, `balance`) VALUES
-(3, 1, 1070),
+(3, 1, 3791),
 (4, 5, 1000);
 
 -- --------------------------------------------------------
