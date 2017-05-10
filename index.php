@@ -86,28 +86,27 @@
 				</div>
 			</div>
 		</div>
-		
 		<div class="container">
 			<div class="banner">
 				<div class="carousel slide" id="myCarousel">
 					<!-- Carousel items -->
 					<div class="carousel-inner">
 						<div class="item active">
-							<img src="img/banner-image.jpg" alt="">
+							<img src="img/my_banner.jpg" alt="">
 							<div class="carousel-caption">
 							  <h1>Cистема ведения семейного бюджета</h1>
 							  <h2>Ведите учет расходов и доходов по различным категориям в режиме реального времени</h2>
 							</div>
 						</div>
 						<div class="item">
-							<img src="img/maxresdefault.jpg" alt="">
+							<img src="img/my_b.png" alt="">
 							<div class="carousel-caption">
 							  <h1>Контролируйте бюджет онлайн</h1>
 							  <h2>Анализ представлен в виде графиков за любой период</h2>
 							</div>
 						</div>
 						<div class="item">
-							<img src="img/banner.jpg" alt="">
+							<img src="img/my_ba.png" alt="">
 							<div class="carousel-caption">
 							  <h1>Прогнозируйте бюджет (NEW!)</h1>
 							  <h2>Рассчитайте свои расходы на следующий месяц</h2>
