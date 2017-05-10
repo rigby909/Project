@@ -43,6 +43,7 @@
 								<li class="active"><a href="cabinet.php" class="">Профиль</a></li>
 								<li><a href="transactions.php" class="">Транзакции</a></li>
 								<li><a href="analysis.php" class="">Анализ</a></li>
+								<li><a href="forecast.php" class="">Прогноз</a></li>
 								<li><a href="credit_calc.php" class="">Кредитный калькулятор</a></li>
 							</ul>
 							<ul class="nav navbar-nav pull-right">
