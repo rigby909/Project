@@ -36,9 +36,9 @@
 						</div>
 						<div id="navbar" class="navbar-collapse collapse">
 							<ul class="nav navbar-nav">
-								<li class="active"><a href="index.php" class="">Главная</a></li>
+								<li><a href="index.php" class="">Главная</a></li>
 								<li><a href="contacts.php">О нас</a></li>
-								<li><a href="registration.php">Регистрация</a></li>
+								<li class="active"><a href="registration.php">Регистрация</a></li>
 							</ul>
 						</div>
 					</div>
@@ -100,6 +100,10 @@
 										}
 										if (trim($HTTP_POST_VARS['first_name'])=="") {
 											echo "<p>Вы не ввели своё имя. Повторите ввод.</p>\n";
+											return(false);
+										}
+										if (trim($HTTP_POST_VARS['last_name'])=="") {
+											echo "<p>Вы не ввели фамилию. Повторите ввод.</p>\n";
 											return(false);
 										}
 										if (trim($HTTP_POST_VARS['email'])=="") {

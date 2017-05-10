@@ -37,9 +37,9 @@
 						</div>
 						<div id="navbar" class="navbar-collapse collapse">
 							<ul class="nav navbar-nav">
-								<li class="active"><a href="cabinet.php" class="">Профиль</a></li>
-								<li class="active"><a href="transactions.php" class="">Транзакции</a></li>
-								<li class="active"><a href="analysis.php" class="">Анализ</a></li>
+								<li><a href="cabinet.php" class="">Профиль</a></li>
+								<li><a href="transactions.php" class="">Транзакции</a></li>
+								<li><a href="analysis.php" class="">Анализ</a></li>
 								<li class="active"><a href="credit_calc.php" class="">Кредитный калькулятор</a></li>
 							</ul>
 							<ul class="nav navbar-nav pull-right">

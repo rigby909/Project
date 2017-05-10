@@ -37,8 +37,8 @@
 						</div>
 						<div id="navbar" class="navbar-collapse collapse">
 							<ul class="nav navbar-nav">
-								<li class="active"><a href="index.php" class="">Главная</a></li>
-								<li><a href="contacts.php">О нас</a></li>
+								<li><a href="index.php" class="">Главная</a></li>
+								<li class="active"><a href="contacts.php">О нас</a></li>
 								<li><a href="registration.php">Регистрация</a></li>
 							</ul>
 						</div>

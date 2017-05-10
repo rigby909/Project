@@ -6,23 +6,27 @@
 	}
 	include('db.php');
 	global $db;
+	$id = $_SESSION['user']['id'];
+
 ?>
 <!DOCTYPE html>
 <html>
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-     <title>КОПИлка - Кабинет</title>
+		<title>КОПИлка - Кабинет</title>
         <meta name="description" content="">
 		<link rel="shortcut icon" href="img/money2.png">
         <link rel="stylesheet" href="css/bootstrap.min.css">
 		<link rel="stylesheet" href="css/bootstrap-theme.css">
 		<link rel="stylesheet" href="css/bootstrap-responsive.css">
         <link rel="stylesheet" href="css/custom-styles.css">
-    </head>
-    <body>
 		<script src="js/jquery-1.9.1.js"></script> 
 		<script src="js/bootstrap.js"></script>	
+		<script src="js/transactions.js"></script>
+
+    </head>
+    <body>
 		<div class="navbar-wrapper">
 			<div class="container-fluid">
 				<nav class="navbar navbar-fixed-top">
@@ -38,10 +42,10 @@
 						</div>
 						<div id="navbar" class="navbar-collapse collapse">
 							<ul class="nav navbar-nav">
-								<li class="active"><a href="cabinet.php" class="">Профиль</a></li>
+								<li><a href="cabinet.php" class="">Профиль</a></li>
 								<li class="active"><a href="transactions.php" class="">Транзакции</a></li>
-								<li class="active"><a href="analysis.php" class="">Анализ</a></li>
-								<li class="active"><a href="credit_calc.php" class="">Кредитный калькулятор</a></li>
+								<li><a href="analysis.php" class="">Анализ</a></li>
+								<li><a href="credit_calc.php" class="">Кредитный калькулятор</a></li>
 							</ul>
 							<ul class="nav navbar-nav pull-right">
 								<li><a href="unsetlogin.php">Выход</a></li>
@@ -65,86 +69,193 @@
 				<div class="row">
 					<div class="col-sm-6">
 						<div class="block">
-							<h1>Ваш личный кабинет</h1>
-							<h2>Информация, настройки</h2>
+							<h1>Транзакции</h1>
+							<h2>Ваш личный кошелек</h2>
 						</div>
 						<div class="block-content"><br>
 							<div class="col-sm-4"></div>
 							<div class="col-sm-8">
 								<form class="form" method="post">
 									<div class="form-group">
-										<h3>Имя: </h3>
-										<input type="text" class="form-control" id="first_name" name="first_name" placeholder="<?php if (isset($_SESSION['user']))  {echo $_SESSION['user']['first_name'];}?>" maxlength="25">	
+										<h3>Текущий баланс: </h3>
+										<?php 
+										$c = $db->query("SELECT * FROM users_balance WHERE user_id=$id");
+											while ($data = $c->fetch_assoc()) {
+												$balance = $data['balance'];
+											}
+										?>
+										<input type="text" disabled class="form-control" id="balance" name="balance" placeholder="<?php echo $balance;?>">	
 									</div>
 									<div class="form-group">
-										<h3>Фамилия: </h3>
-										<input type="text" class="form-control" id="last_name" name="last_name" placeholder="<?php if (isset($_SESSION['user']))  {echo $_SESSION['user']['last_name'];}?>" maxlength="25">	
+										<h3>Тип платежа: </h3>
+										<div class="radio" name="expence_type" id="expence_type">
+											<label><input type="radio" name="type" value="2" onchange="check()">Расходы</label>
+										</div>
+										<div class="radio" name="income_type" id="income_type">
+											<label><input type="radio" name="type" value="1" onchange="check()">Доходы</label>
+										</div>
+										<script>
+											function check(){
+											  var radio=document.getElementsByName("type");
+											  if (radio[0].checked){
+												$('#standart_incomes_categories').css('display', 'none');
+												$('#user_incomes_categories').css('display', 'none');
+												$('#standart_expences_categories').css('display', 'inline-block');
+												$('#user_expences_categories').css('display', 'inline-block');
+											  } else if (radio[1].checked){
+												$('#standart_expences_categories').css('display', 'none');
+												$('#user_expences_categories').css('display', 'none');
+												$('#standart_incomes_categories').css('display', 'inline-block');
+												$('#user_incomes_categories').css('display', 'inline-block');
+											 }
+											}
+										</script>
 									</div>
-									<?php
-									if ($_SESSION[user]['identity']=='') {
-									?>
 									<div class="form-group">
-										<h3>Email: </h3>
-										<input type="email" class="form-control" id="email" name="email" placeholder="<?php if (isset($_SESSION['user']))  {echo $_SESSION['user']['email'];}?>" maxlength="25">
+										<h3>Сумма: </h3>
+										<input type="number" class="form-control" id="amount" name="amount" maxlength="25">
 									</div>									
 									<div class="form-group">
-										<h3>Пароль: </h3>
-										<input type="password" class="form-control" id="password" name="password" placeholder="" maxlength="25">	
+										<h3>Дата: </h3>
+										<input type="date" name="date" id="date" class="form-control" value="<?php echo date("Y-m-d");?>" min="2017-01-01" max="<?php echo date("Y-m-d");?>">
 									</div>
 									<div class="form-group">
-										<h3>Повторите пароль: </h3>
-										<input type="password" class="form-control" id="password1" name="password1" placeholder="" maxlength="25">	
+										<h3>Комментарий: </h3>
+										<input type="text" class="form-control" id="comment" name="comment" maxlength="30">	
 									</div>
-									<?php
-										} else {
-									?>
-									<p>Вы авторизованы через социальную сеть.</p>
-									<?php 
-										}
-									?>
+									<div class="form-group" style="display:none;" id="standart_incomes_categories">
+										<h3>Выбрать категорию дохода: </h3>
+										<select class="form-control" name="standart_incomes_categories">
+											<option></option>
+											<?php
+												$c = $db->query("SELECT name FROM standart_incomes_categories");
+												while ($data = $c->fetch_assoc()) {
+													echo '<option name="st_incomes_category" value="'.$data['name'].'">'.$data['name'].'</option>';
+												}
+											?>
+										</select>
+									</div>
+									<div class="form-group" style="display:none;" id="user_incomes_categories">
+										<h3>Ваши категории доходов: </h3>
+										<select class="form-control" name="user_incomes_categories">
+											<option></option>
+											<?php
+												$c = $db->query("SELECT name FROM user_incomes_categories WHERE user_id=$id");
+												while ($data = $c->fetch_assoc()) {
+													echo '<option name="u_incomes_category" value="'.$data['name'].'">'.$data['name'].'</option>';
+												}
+											?>
+										</select>
+									</div>										
+									<div class="form-group" style="display:none;" id="standart_expences_categories">
+										<h3>Выбрать категорию расходов: </h3>
+										<select class="form-control" name="standart_expences_categories">
+											<option></option>
+											<?php
+												$c = $db->query("SELECT name FROM standart_expences_categories");
+												while ($data = $c->fetch_assoc()) {
+													echo '<option name="st_expences_category" value="'.$data['name'].'">'.$data['name'].'</option>';
+												}
+											?>
+										</select>
+									</div>								
+									<div class="form-group" style="display:none;" id="user_expences_categories">
+										<h3>Ваши категории расходов: </h3>
+										<select class="form-control" name="user_expences_categories">
+											<option></option>
+											<?php
+												$c = $db->query("SELECT name FROM user_expences_categories WHERE user_id=$id");
+												while ($data = $c->fetch_assoc()) {
+													echo '<option name="u_expences_category" "value="'.$data['name'].'">'.$data['name'].'</option>';
+												}
+											?>
+										</select>
+									</div>
 									<div class="form-group form-group-lg">
 										<p class="help-block"> </p>
-									</div>
-									<input type="submit" name="new_submit" class="btn btn-default"/>
+									</div>									
+									<input type="submit" name="transaction_save" id="transaction_save" class="btn btn-default" value="Сохранить"/>
 									<input type="reset" class="btn btn-default"/>
 								</form>
 								<?php
-									if (isset($_POST['new_submit'])) {											
-										$id = $_SESSION['user']['id'];
-										$email = $_POST['email'];
-										$first_name = $_POST['first_name'];
-										$last_name = $_POST['last_name'];
-										$password = $_POST['password'];
-										$password1 = $_POST['password1'];
-										if (($email=='') && ($first_name=='') && ($last_name=='') && ($gender=='') && ($password=='')) {
-											echo "<p>Изменений нет.</p>\n";
-										}
-										if (trim($email)!="") {
-											$n = trim($email);
-											$r = $db->query("SELECT email FROM users");
-											while ($data = $r->fetch_assoc()) {  
-												if ($data['email'] == $n) {
-												echo "<p>Такая почта уже зарегистрирована</p>\n";
-												exit;
+									if (isset($_POST['transaction_save'])) {	
+										$type=$_POST['type'];
+										$amount = $_POST['amount'];
+										$date = $_POST['date'];
+										$comment = $_POST['comment'];
+										$standart_incomes_categories = $_POST['standart_incomes_categories'];
+										$user_incomes_categories = $_POST['user_incomes_categories'];
+										$standart_expences_categories = $_POST['standart_expences_categories'];
+										$user_expences_categories = $_POST['user_expences_categories'];
+										if (($type!='') && ($amount!='') && ($date!='')) {
+											if ($standart_incomes_categories!='') {
+												$r = $db->query("SELECT id FROM standart_incomes_categories WHERE name='$standart_incomes_categories'");
+												while ($data = $r->fetch_assoc()) {	
+													$category=$data['id'];
 												}
+												$db->query("INSERT INTO transactions (user_id, type, date, amount, st_income_category) VALUES ($id, 1, '$date', '$amount', $category)");	
+												$d = $db->query("SELECT * FROM users_balance WHERE user_id=$id");
+												if (mysqli_num_rows($d) > 0) {
+													$db->query("UPDATE users_balance SET balance=balance+$amount WHERE user_id=$id");						
+												} else {											
+													$db->query("INSERT INTO users_balance (user_id, balance) VALUES ($id, 0)");	
+													$db->query("UPDATE users_balance SET balance=balance+$amount WHERE user_id=$id");																			
+												}				
+												echo "<p>Сохранено.</p>\n";
+												exit;
 											}
-											$db->query("UPDATE users SET email='$n' WHERE id=$id");
-											echo "<p>Изменен email. Авторизуйтесь повторно, чтобы увидеть изменения. </p>\n";
-										}
-										if (trim($first_name)!="") {										
-											$n = trim($first_name);
-											$db->query("UPDATE users SET first_name='$n' WHERE id=$id");
-											echo "<p>Изменено имя. Авторизуйтесь повторно, чтобы увидеть изменения.</p>\n";
-										}
-										if (trim($last_name)!="") {										
-											$n = trim($last_name);
-											$db->query("UPDATE users SET last_name='$n' WHERE id=$id");
-											echo "<p>Изменена фамилия. Авторизуйтесь повторно, чтобы увидеть изменения.</p>\n";
-										}
-										if (trim($password)!="" && trim($password)==trim($password1)) {
-											$n = trim($password);
-											$db->query("UPDATE users SET password='$n' WHERE id=$id");
-											echo "<p>Изменен пароль. Авторизуйтесь повторно, чтобы увидеть изменения.</p>\n";
+											if ($user_incomes_categories!='') {
+												$r = $db->query("SELECT id FROM user_incomes_categories WHERE name='$user_incomes_categories'");
+												while ($data = $r->fetch_assoc()) {	
+													$category=$data['id'];
+												}
+												$db->query("INSERT INTO transactions (user_id, type, date, amount, user_income_category) VALUES ($id, 1, '$date', '$amount', $category)");	
+												$d = $db->query("SELECT * FROM users_balance WHERE user_id=$id");
+												if (mysqli_num_rows($d) > 0) {
+												$db->query("UPDATE users_balance SET balance=balance+$amount WHERE user_id=$id");						
+												} else {											
+													$db->query("INSERT INTO users_balance (user_id, balance) VALUES ($id, 0)");	
+													$db->query("UPDATE users_balance SET balance=balance+$amount WHERE user_id=$id");																			
+												}				
+												echo "<p>Сохранено.</p>\n";
+												exit;
+											}
+											if ($standart_expences_categories!='') {
+												$r = $db->query("SELECT id FROM standart_expences_categories WHERE name='$standart_expences_categories'");
+												while ($data = $r->fetch_assoc()) {	
+													$category=$data['id'];
+												}
+												$db->query("INSERT INTO transactions (user_id, type, date, amount, st_expence_category) VALUES ($id, 2, '$date', '$amount', $category)");	
+												$d = $db->query("SELECT * FROM users_balance WHERE user_id=$id");
+												if (mysqli_num_rows($d) > 0) {
+													$db->query("UPDATE users_balance SET balance=balance-$amount WHERE user_id=$id");						
+												} else {											
+													$db->query("INSERT INTO users_balance (user_id, balance) VALUES ($id, 0)");	
+													$db->query("UPDATE users_balance SET balance=balance-$amount WHERE user_id=$id");																			
+												}				
+												echo "<p>Сохранено.</p>\n";
+												exit;
+											}
+											if ($user_expences_categories!='') {
+												$r = $db->query("SELECT id FROM user_expences_categories WHERE name='$user_expences_categories'");
+												while ($data = $r->fetch_assoc()) {	
+													$category=$data['id'];
+												}
+												$db->query("INSERT INTO transactions (user_id, type, date, amount, user_expence_category) VALUES ($id, 2, '$date', '$amount', $category)");	
+												$d = $db->query("SELECT * FROM users_balance WHERE user_id=$id");
+												if (mysqli_num_rows($d) > 0) {
+												$db->query("UPDATE users_balance SET balance=balance-$amount WHERE user_id=$id");						
+												} else {											
+													$db->query("INSERT INTO users_balance (user_id, balance) VALUES ($id, 0)");	
+													$db->query("UPDATE users_balance SET balance=balance-$amount WHERE user_id=$id");																			
+												}				
+												echo "<p>Сохранено.</p>\n";
+												exit;
+											echo "<p>ю расход.</p>\n";
+											}
+											
+										} else {
+											echo "<p>Выберите тип транзакции, одну из категорий, введите сумму и дату.</p>\n";
 										}
 									}
 								?>
@@ -154,101 +265,6 @@
 					<div class="col-sm-6">
 						<div class="col-sm-10">
 							<div class="block-content">
-								<h1>		
-									<?php 
-										if (isset($_SESSION['user']))  {
-											echo "Здравствуйте, ".$_SESSION['user']['first_name']." ".$_SESSION['user']['last_name']."!";
-											echo "Здравствуйте, ".$_SESSION['user']['id'];
-										}
-									?>
-								</h1><br>
-								<h1>Создайте собственные категории для будущих транзакций или используйте стандартные </h1>
-								<form class="form" method="post">
-									<br>
-									<div class="form-group">
-										<h3>Новая категория доходов: </h3>
-										<input type="text" class="form-control" id="new_income_category" name="new_income_category" maxlength="25">	
-									</div>
-									<div class="form-group">
-										<h3>Новая категория расходов: </h3>
-										<input type="text" class="form-control" id="new_expence_category" name="new_expence_category" maxlength="25">	
-									</div>
-									<div class="form-group">
-										<h3>Удалить собственную категорию доходов: </h3>
-										<select name="user_incomes_categories">
-											<option></option>
-											<?php
-												$id = $_SESSION['user']['id'];
-												$c = $db->query("SELECT name FROM user_incomes_categories WHERE user_id=$id");
-												while ($data = $c->fetch_assoc()) {
-													echo '<option name="delete_incomes_category" value="'.$data['name'].'">'.$data['name'].'</option>';
-												}
-											?>
-										</select>
-									</div>
-									<div class="form-group">
-										<h3>Удалить собственную категорию расходов: </h3>
-										<select name="user_expences_categories">
-											<option></option>
-											<?php
-												$id = $_SESSION['user']['id'];
-												$c = $db->query("SELECT name FROM user_expences_categories WHERE user_id=$id");
-												while ($data = $c->fetch_assoc()) {
-													echo '<option name="delete_expences_category" "value="'.$data['name'].'">'.$data['name'].'</option>';
-												}
-											?>
-										</select>
-									</div>
-									<div class="form-group form-group-lg">
-										<p class="help-block"> </p>
-									</div>
-									<input type="submit" name="categories_submit" class="btn btn-default" value="Сохранить"/>
-								</form>
-								<?php
-									if (isset($_POST['categories_submit'])) {
-										$id = $_SESSION['user']['id'];
-										$new_income_category = $_POST['new_income_category'];
-										$new_expence_category = $_POST['new_expence_category'];
-										$delete_incomes_category = $_POST['user_incomes_categories'];
-										$delete_expences_category = $_POST['user_expences_categories'];
-										if (trim($new_income_category)!="") {
-											$n = trim($new_income_category);
-											$r = $db->query("SELECT name FROM user_incomes_categories WHERE user_id=$id");
-											while ($data = $r->fetch_assoc()) {  
-												if ($data['name'] == $n) {
-												echo "<p>Вы уже создали такую категорию.</p>\n";
-												exit;
-												}
-											}
-											$db->query("INSERT INTO user_incomes_categories (user_id, name) VALUES ($id, '$n')");						
-											echo "<p>Категория создана.</p>\n";
-										}
-										if (trim($new_expence_category)!="") {
-											$n = trim($new_expence_category);
-											$d = $db->query("SELECT name FROM user_expences_categories WHERE user_id=$id");
-											while ($data = $d->fetch_assoc()) {  
-												if ($data['name'] == $n) {
-												echo "<p>Вы уже создали такую категорию.</p>\n";
-												exit;
-												}
-											}
-											$db->query("INSERT INTO user_expences_categories (user_id, name) VALUES ($id, '$n')");						
-											echo "<p>Категория создана.</p>\n";
-										}
-										if (trim($delete_incomes_category!="")) {
-											$db->query("DELETE FROM user_incomes_categories WHERE user_id=$id AND name='$delete_incomes_category'");
-											echo "<p>Категория удалена.</p>\n";
-										}
-										if ($delete_expences_category!="") {
-											$db->query("DELETE FROM user_expences_categories WHERE user_id=$id AND name='$delete_expences_category'");
-											echo "<p>Категория удалена.</p>\n";
-										}
-									}
-								?>
-								<br>
-								<h1>Создайте шаблон для автоматических транзакций</h1>
-								<form class="form" method="post">
-								</form>
 							</div>
 						</div>
 					</div>

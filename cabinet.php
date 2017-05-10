@@ -6,6 +6,7 @@
 	}
 	include('db.php');
 	global $db;
+	$id = $_SESSION['user']['id'];
 ?>
 <!DOCTYPE html>
 <html>
@@ -39,9 +40,9 @@
 						<div id="navbar" class="navbar-collapse collapse">
 							<ul class="nav navbar-nav">
 								<li class="active"><a href="cabinet.php" class="">Профиль</a></li>
-								<li class="active"><a href="transactions.php" class="">Транзакции</a></li>
-								<li class="active"><a href="analysis.php" class="">Анализ</a></li>
-								<li class="active"><a href="credit_calc.php" class="">Кредитный калькулятор</a></li>
+								<li><a href="transactions.php" class="">Транзакции</a></li>
+								<li><a href="analysis.php" class="">Анализ</a></li>
+								<li><a href="credit_calc.php" class="">Кредитный калькулятор</a></li>
 							</ul>
 							<ul class="nav navbar-nav pull-right">
 								<li><a href="unsetlogin.php">Выход</a></li>
@@ -110,7 +111,6 @@
 								</form>
 								<?php
 									if (isset($_POST['new_submit'])) {											
-										$id = $_SESSION['user']['id'];
 										$email = $_POST['email'];
 										$first_name = $_POST['first_name'];
 										$last_name = $_POST['last_name'];
@@ -174,10 +174,9 @@
 									</div>
 									<div class="form-group">
 										<h3>Удалить собственную категорию доходов: </h3>
-										<select name="user_incomes_categories">
+										<select class="form-control" name="user_incomes_categories">
 											<option></option>
 											<?php
-												$id = $_SESSION['user']['id'];
 												$c = $db->query("SELECT name FROM user_incomes_categories WHERE user_id=$id");
 												while ($data = $c->fetch_assoc()) {
 													echo '<option name="delete_incomes_category" value="'.$data['name'].'">'.$data['name'].'</option>';
@@ -187,10 +186,9 @@
 									</div>
 									<div class="form-group">
 										<h3>Удалить собственную категорию расходов: </h3>
-										<select name="user_expences_categories">
+										<select class="form-control" name="user_expences_categories">
 											<option></option>
 											<?php
-												$id = $_SESSION['user']['id'];
 												$c = $db->query("SELECT name FROM user_expences_categories WHERE user_id=$id");
 												while ($data = $c->fetch_assoc()) {
 													echo '<option name="delete_expences_category" "value="'.$data['name'].'">'.$data['name'].'</option>';
@@ -205,7 +203,6 @@
 								</form>
 								<?php
 									if (isset($_POST['categories_submit'])) {
-										$id = $_SESSION['user']['id'];
 										$new_income_category = $_POST['new_income_category'];
 										$new_expence_category = $_POST['new_expence_category'];
 										$delete_incomes_category = $_POST['user_incomes_categories'];
