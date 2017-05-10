@@ -19,7 +19,7 @@
 			}
 		} else {
 			$db->query("INSERT INTO users (first_name, last_name, auth_via, identity) VALUES ('$first_name', '$last_name', 2, '$identity')");
-			$r = $db->query("SELECT * FROM users LEFT JOIN auth_type ON users.auth_via = auth_type.id WHERE auth_name='social'");
+			$r = $db->query("SELECT * FROM users WHERE identity='$identity'");
 			while ($data = $r->fetch_assoc()) {	
 				$_SESSION['user'] = $data;
 			}

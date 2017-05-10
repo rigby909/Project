@@ -8,13 +8,11 @@
 	if (isset($_POST['submit'])) {
 		$email = $_POST['auto_email'];
 		$password = $_POST['auto_password'];
-		$r = $db->query("SELECT * FROM users LEFT JOIN auth_type ON users.auth_via = auth_type.id WHERE auth_name='native'");
+		$r = $db->query("SELECT * FROM users WHERE email='$email' AND password='$password'");
 		while ($data = $r->fetch_assoc()) {	
-			if ($data['email'] == $email && $data['password'] == $password) {
 				$_SESSION['user'] = $data;
 				header("Location: cabinet.php");
 				exit;
-			}
 		}
 		if (!isset($_SESSION['user'])) {
 			echo "<script>alert(\"Некорректный логин или пароль. Повторите ввод.\");</script>";
@@ -61,7 +59,7 @@
 							<ul class="nav navbar-nav pull-right">
 								<li><form method="post" action="" class="navbar-form">
 									<div class="form-group">
-										<input type="text" class="form-control" placeholder="E-mail" value="" name="auto_email">
+										<input type="email" class="form-control" placeholder="E-mail" value="" name="auto_email">
 									</div>
 									<div class="form-group">
 										<input type="password" class="form-control" placeholder="Пароль" value="" name="auto_password">

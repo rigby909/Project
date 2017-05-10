@@ -158,6 +158,7 @@
 									<?php 
 										if (isset($_SESSION['user']))  {
 											echo "Здравствуйте, ".$_SESSION['user']['first_name']." ".$_SESSION['user']['last_name']."!";
+											echo "Здравствуйте, ".$_SESSION['user']['id'];
 										}
 									?>
 								</h1><br>
