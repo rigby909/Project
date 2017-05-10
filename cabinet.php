@@ -5,6 +5,7 @@
 		exit;
 	}
 	include('db.php');
+	include('template.php');
 	global $db;
 	$id = $_SESSION['user']['id'];
 ?>
@@ -103,9 +104,7 @@
 									<?php 
 										}
 									?>
-									<div class="form-group form-group-lg">
-										<p class="help-block"> </p>
-									</div>
+									<br>
 									<input type="submit" name="new_submit" class="btn btn-default"/>
 									<input type="reset" class="btn btn-default"/>
 								</form>
@@ -148,100 +147,7 @@
 										}
 									}
 								?>
-							</div>
-						</div>
-					</div>
-					<div class="col-sm-6">
-						<div class="col-sm-10">
-							<div class="block-content">
-								<h1>		
-									<?php 
-										if (isset($_SESSION['user']))  {
-											echo "Здравствуйте, ".$_SESSION['user']['first_name']." ".$_SESSION['user']['last_name']."!";
-										}
-									?>
-								</h1><br>
-								<h1>Создайте собственные категории для будущих транзакций или используйте стандартные </h1>
-								<form class="form" method="post">
-									<br>
-									<div class="form-group">
-										<h3>Новая категория доходов: </h3>
-										<input type="text" class="form-control" id="new_income_category" name="new_income_category" maxlength="25">	
-									</div>
-									<div class="form-group">
-										<h3>Новая категория расходов: </h3>
-										<input type="text" class="form-control" id="new_expence_category" name="new_expence_category" maxlength="25">	
-									</div>
-									<div class="form-group">
-										<h3>Удалить собственную категорию доходов: </h3>
-										<select class="form-control" name="user_incomes_categories">
-											<option></option>
-											<?php
-												$c = $db->query("SELECT name FROM user_incomes_categories WHERE user_id=$id");
-												while ($data = $c->fetch_assoc()) {
-													echo '<option name="delete_incomes_category" value="'.$data['name'].'">'.$data['name'].'</option>';
-												}
-											?>
-										</select>
-									</div>
-									<div class="form-group">
-										<h3>Удалить собственную категорию расходов: </h3>
-										<select class="form-control" name="user_expences_categories">
-											<option></option>
-											<?php
-												$c = $db->query("SELECT name FROM user_expences_categories WHERE user_id=$id");
-												while ($data = $c->fetch_assoc()) {
-													echo '<option name="delete_expences_category" "value="'.$data['name'].'">'.$data['name'].'</option>';
-												}
-											?>
-										</select>
-									</div>
-									<div class="form-group form-group-lg">
-										<p class="help-block"> </p>
-									</div>
-									<input type="submit" name="categories_submit" class="btn btn-default" value="Сохранить"/>
-								</form>
-								<?php
-									if (isset($_POST['categories_submit'])) {
-										$new_income_category = $_POST['new_income_category'];
-										$new_expence_category = $_POST['new_expence_category'];
-										$delete_incomes_category = $_POST['user_incomes_categories'];
-										$delete_expences_category = $_POST['user_expences_categories'];
-										if (trim($new_income_category)!="") {
-											$n = trim($new_income_category);
-											$r = $db->query("SELECT name FROM user_incomes_categories WHERE user_id=$id");
-											while ($data = $r->fetch_assoc()) {  
-												if ($data['name'] == $n) {
-												echo "<p>Вы уже создали такую категорию.</p>\n";
-												exit;
-												}
-											}
-											$db->query("INSERT INTO user_incomes_categories (user_id, name) VALUES ($id, '$n')");						
-											echo "<p>Категория создана.</p>\n";
-										}
-										if (trim($new_expence_category)!="") {
-											$n = trim($new_expence_category);
-											$d = $db->query("SELECT name FROM user_expences_categories WHERE user_id=$id");
-											while ($data = $d->fetch_assoc()) {  
-												if ($data['name'] == $n) {
-												echo "<p>Вы уже создали такую категорию.</p>\n";
-												exit;
-												}
-											}
-											$db->query("INSERT INTO user_expences_categories (user_id, name) VALUES ($id, '$n')");						
-											echo "<p>Категория создана.</p>\n";
-										}
-										if (trim($delete_incomes_category!="")) {
-											$db->query("DELETE FROM user_incomes_categories WHERE user_id=$id AND name='$delete_incomes_category'");
-											echo "<p>Категория удалена.</p>\n";
-										}
-										if ($delete_expences_category!="") {
-											$db->query("DELETE FROM user_expences_categories WHERE user_id=$id AND name='$delete_expences_category'");
-											echo "<p>Категория удалена.</p>\n";
-										}
-									}
-								?>
-								<hr>
+								<hr>								
 								<h1>Создайте шаблон для автоматических транзакций</h1><br>
 								<form class="form" method="post">
 									<div class="form-group">
@@ -274,12 +180,8 @@
 										<input type="number" class="form-control" id="amount" name="amount" maxlength="25">
 									</div>									
 									<div class="form-group">
-										<h3>Дата: </h3>
-										<input type="date" name="date" id="date" class="form-control" value="<?php echo date("Y-m-d");?>" min="2017-01-01" max="<?php echo date("Y-m-d");?>">
-									</div>
-									<div class="form-group">
-										<h3>Комментарий: </h3>
-										<input type="text" class="form-control" id="comment" name="comment" maxlength="30">	
+										<h3>День месяца: </h3>
+										<input type="number" name="day" id="day" class="form-control" placeholder="число от 1 до 30">
 									</div>
 									<div class="form-group" style="display:none;" id="standart_incomes_categories">
 										<h3>Выбрать категорию дохода: </h3>
@@ -329,9 +231,209 @@
 											?>
 										</select>
 									</div><br>									
-									<input type="submit" name="transaction_save" id="transaction_save" class="btn btn-default" value="Сохранить"/>
+									<input type="submit" name="template_save" id="template_save" class="btn btn-default" value="Создать шаблон"/>
 									<input type="reset" class="btn btn-default"/>
-								</form><hr>
+								</form>
+								<?php
+									if (isset($_POST['template_save'])) {											
+										$day = $_POST['day'];
+										$pattern = '/^([1-9]|[1][0-9]|[2][0-9]|[3][0])$/';
+										if (!preg_match($pattern, $day)) {
+											echo '<p>Поле "День месяца" заполнено неправильно.</p>';
+											exit;
+										} else {
+											$type=$_POST['type'];
+											$amount = $_POST['amount'];
+											$comment = "template";
+											$standart_incomes_categories = $_POST['standart_incomes_categories'];
+											$user_incomes_categories = $_POST['user_incomes_categories'];
+											$standart_expences_categories = $_POST['standart_expences_categories'];
+											$user_expences_categories = $_POST['user_expences_categories'];
+											if (($type!='') && ($amount!='') && ($day!='')) {
+												if ($standart_incomes_categories!='') {
+													$r = $db->query("SELECT id FROM standart_incomes_categories WHERE name='$standart_incomes_categories'");
+													while ($data = $r->fetch_assoc()) {	
+														$category=$data['id'];
+													}
+													$db->query("INSERT INTO templates (user_id, type, day, amount, st_income_category, comment) VALUES ($id, 1, '$day', '$amount', $category, '$comment')");		
+													echo "<p>Сохранено.</p>\n";
+													exit;
+												}
+												if ($user_incomes_categories!='') {
+													$r = $db->query("SELECT id FROM user_incomes_categories WHERE name='$user_incomes_categories'");
+													while ($data = $r->fetch_assoc()) {	
+														$category=$data['id'];
+													}
+													$db->query("INSERT INTO templates (user_id, type, day, amount, user_income_category, comment) VALUES ($id, 1, '$day', '$amount', $category, '$comment')");		
+													echo "<p>Сохранено.</p>\n";
+													exit;
+												}
+												if ($standart_expences_categories!='') {
+													$r = $db->query("SELECT id FROM standart_expences_categories WHERE name='$standart_expences_categories'");
+													while ($data = $r->fetch_assoc()) {	
+														$category=$data['id'];
+													}
+													$db->query("INSERT INTO templates (user_id, type, day, amount, st_expence_category, comment) VALUES ($id, 2, '$day', '$amount', $category, '$comment')");		
+													echo "<p>Сохранено.</p>\n";
+													exit;
+												}
+												if ($user_expences_categories!='') {
+													$r = $db->query("SELECT id FROM user_expences_categories WHERE name='$user_expences_categories'");
+													while ($data = $r->fetch_assoc()) {	
+														$category=$data['id'];
+													}
+													$db->query("INSERT INTO templates (user_id, type, day, amount, user_expence_category, comment) VALUES ($id, 2, '$day', '$amount', $category, '$comment')");	
+													echo "<p>Сохранено.</p>\n";
+													exit;
+												}		
+											} else {
+												echo "<p>Выберите тип транзакции, одну из категорий, введите сумму и день.</p>\n";
+											}
+										}
+									}
+								?>		
+								<hr>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="col-sm-10">
+							<div class="block-content">
+								<h1>		
+									<?php 
+										if (isset($_SESSION['user']))  {
+											echo "Здравствуйте, ".$_SESSION['user']['first_name']." ".$_SESSION['user']['last_name']."!";
+										}
+									?>
+								</h1><br>
+								<h1>Создайте свои категории доходов и расходов для будущих транзакций или используйте стандартные </h1><br>
+								<form class="form" method="post">
+									<br>
+									<div class="form-group">
+										<h3>Новая категория доходов: </h3>
+										<input type="text" class="form-control" id="new_income_category" name="new_income_category" maxlength="25">	
+									</div>
+									<div class="form-group">
+										<h3>Новая категория расходов: </h3>
+										<input type="text" class="form-control" id="new_expence_category" name="new_expence_category" maxlength="25">	
+									</div>
+									<div class="form-group">
+										<h3>Удалить собственную категорию доходов: </h3>
+										<select class="form-control" name="user_incomes_categories">
+											<option></option>
+											<?php
+												$c = $db->query("SELECT name FROM user_incomes_categories WHERE user_id=$id");
+												while ($data = $c->fetch_assoc()) {
+													echo '<option name="delete_incomes_category" value="'.$data['name'].'">'.$data['name'].'</option>';
+												}
+											?>
+										</select>
+									</div>
+									<div class="form-group">
+										<h3>Удалить собственную категорию расходов: </h3>
+										<select class="form-control" name="user_expences_categories">
+											<option></option>
+											<?php
+												$c = $db->query("SELECT name FROM user_expences_categories WHERE user_id=$id");
+												while ($data = $c->fetch_assoc()) {
+													echo '<option name="delete_expences_category" "value="'.$data['name'].'">'.$data['name'].'</option>';
+												}
+											?>
+										</select>
+									</div><br><br>
+									<input type="submit" name="categories_submit" class="btn btn-default" value="Сохранить"/>
+								</form>
+								<?php
+									if (isset($_POST['categories_submit'])) {
+										$new_income_category = $_POST['new_income_category'];
+										$new_expence_category = $_POST['new_expence_category'];
+										$delete_incomes_category = $_POST['user_incomes_categories'];
+										$delete_expences_category = $_POST['user_expences_categories'];
+										if (trim($new_income_category)!="") {
+											$n = trim($new_income_category);
+											$r = $db->query("SELECT name FROM user_incomes_categories WHERE user_id=$id");
+											while ($data = $r->fetch_assoc()) {  
+												if ($data['name'] == $n) {
+												echo "<p>Вы уже создали такую категорию.</p>\n";
+												exit;
+												}
+											}
+											$db->query("INSERT INTO user_incomes_categories (user_id, name) VALUES ($id, '$n')");						
+											echo "<p>Категория создана.</p>\n";
+										}
+										if (trim($new_expence_category)!="") {
+											$n = trim($new_expence_category);
+											$d = $db->query("SELECT name FROM user_expences_categories WHERE user_id=$id");
+											while ($data = $d->fetch_assoc()) {  
+												if ($data['name'] == $n) {
+												echo "<p>Вы уже создали такую категорию.</p>\n";
+												exit;
+												}
+											}
+											$db->query("INSERT INTO user_expences_categories (user_id, name) VALUES ($id, '$n')");						
+											echo "<p>Категория создана.</p>\n";
+										}
+										if (trim($delete_incomes_category!="")) {
+											$db->query("DELETE FROM user_incomes_categories WHERE user_id=$id AND name='$delete_incomes_category'");
+											echo "<p>Категория удалена.</p>\n";
+										}
+										if ($delete_expences_category!="") {
+											$db->query("DELETE FROM user_expences_categories WHERE user_id=$id AND name='$delete_expences_category'");
+											echo "<p>Категория удалена.</p>\n";
+										}
+									}
+								?>
+								<hr>
+								<h1>Ваши шаблоны</h1><br>
+								<?php
+									$d = $db->query("SELECT * FROM templates LEFT JOIN transactions_type on templates.type=transactions_type.id WHERE user_id=$id");
+									if (mysqli_num_rows($d) > 0) {
+										echo "<table class='table'><tr><td colspan=6 style='font-weight:bold; text-align:center; text-transform:uppercase;'>Шаблоны транзакций</td></tr>";
+										echo "<tr><th>id</th><th>день месяца</th><th>тип</th><th>сумма</th><th>категория</th><th>комментарий</th></tr>";
+										while ($row = $d->fetch_assoc()) {	
+											if ($row['st_income_category']!="") {
+												$c = $db->query("SELECT * FROM standart_incomes_categories WHERE id=".$row['st_income_category']);
+												while ($data = $c->fetch_assoc()) {	
+													$categ=$data['name'];
+												}
+											} elseif ($row['st_expence_category']!="") {
+												$c = $db->query("SELECT * FROM standart_expences_categories WHERE id=".$row['st_expence_category']);
+												while ($data = $c->fetch_assoc()) {	
+													$categ=$data['name'];
+												}
+											} elseif ($row['user_income_category']!="") {										
+												$c = $db->query("SELECT * FROM user_incomes_categories WHERE id=".$row['user_income_category']);
+												while ($data = $c->fetch_assoc()) {	
+													$categ=$data['name'];
+												}
+											} elseif ($row['user_expence_category']!="") {
+												$c = $db->query("SELECT * FROM user_expences_categories WHERE id=".$row['user_expence_category']);
+												while ($data = $c->fetch_assoc()) {	
+													$categ=$data['name'];
+												}
+											}
+											echo "<tr class='table'><td>".$row['temp_id']."</td><td>".$row['day']."</td><td>".$row['name']."</td><td>".$row['amount']."</td><td>".$categ."</td><td>".$row['comment']."</td></tr>";
+										}
+										echo "</table>";
+									} else {
+										echo "<h3>Вы не создали ни одного шаблона.</h3>";
+									}
+								?><br>
+								<form class="form" method="post">
+								<div class="form-group">
+									<h3>Удалить шаблон</h3>
+									<h3>Номер: </h3>
+									<input type="number" class="form-control" id="temp_id" name="temp_id" maxlength="25"/><br>
+									<input type="submit" name="temp_delete" id="temp_delete" class="btn btn-default" value="Удалить"/>
+								</div>
+								</form>
+								<?php
+									if (isset($_POST['temp_delete'])) {
+										$temp_id = $_POST['temp_id'];
+										$r = $db->query("DELETE FROM templates WHERE temp_id='$temp_id'");
+										echo "<p>Запись удалена.</p>\n";
+									}
+								?>
 							</div>
 						</div>
 					</div>

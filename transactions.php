@@ -246,7 +246,6 @@
 												}				
 												echo "<p>Сохранено.</p>\n";
 												exit;
-											echo "<p>ю расход.</p>\n";
 											}
 											
 										} else {
@@ -268,7 +267,6 @@
 										}
 										$r = $db->query("DELETE FROM transactions WHERE tr_id='$tr_id'");
 										echo "<p>Запись удалена.</p>\n";
-										exit;
 									}
 								?>
 							</div>
@@ -331,7 +329,7 @@
 								<th>тип</th>
 								<th>сумма</th>
 								<th>категория</th>
-								<th>комментарий<th>
+								<th>комментарий</th>
 							</tr>
 						</table>
 					</div>					

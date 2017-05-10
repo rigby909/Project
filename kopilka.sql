@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Май 07 2017 г., 20:27
+-- Время создания: Май 08 2017 г., 13:03
 -- Версия сервера: 5.5.35-log
 -- Версия PHP: 5.3.27
 
@@ -103,6 +103,43 @@ INSERT INTO `standart_incomes_categories` (`id`, `name`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Структура таблицы `templates`
+--
+
+CREATE TABLE IF NOT EXISTS `templates` (
+  `temp_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `type` int(11) NOT NULL,
+  `day` varchar(2) NOT NULL,
+  `amount` double NOT NULL,
+  `st_income_category` int(11) DEFAULT NULL,
+  `st_expence_category` int(11) DEFAULT NULL,
+  `user_income_category` int(11) DEFAULT NULL,
+  `user_expence_category` int(11) DEFAULT NULL,
+  `comment` varchar(30) DEFAULT NULL,
+  PRIMARY KEY (`temp_id`),
+  KEY `user_id` (`user_id`),
+  KEY `type` (`type`),
+  KEY `st_income_category` (`st_income_category`),
+  KEY `st_expence_category` (`st_expence_category`),
+  KEY `st_expence_category_2` (`st_expence_category`),
+  KEY `user_income_category` (`user_income_category`),
+  KEY `user_expence_category` (`user_expence_category`),
+  KEY `user_expence_category_2` (`user_expence_category`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
+
+--
+-- Дамп данных таблицы `templates`
+--
+
+INSERT INTO `templates` (`temp_id`, `user_id`, `type`, `day`, `amount`, `st_income_category`, `st_expence_category`, `user_income_category`, `user_expence_category`, `comment`) VALUES
+(3, 1, 2, '3', 850, NULL, NULL, NULL, 2, 'template'),
+(4, 1, 1, '28', 3600, 5, NULL, NULL, NULL, 'template'),
+(5, 1, 1, '1', 100, 3, NULL, NULL, NULL, 'template');
+
+-- --------------------------------------------------------
+
+--
 -- Структура таблицы `transactions`
 --
 
@@ -125,7 +162,7 @@ CREATE TABLE IF NOT EXISTS `transactions` (
   KEY `user_expence_category` (`user_expence_category`),
   KEY `user_id` (`user_id`),
   KEY `user_id_2` (`user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=37 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10751 ;
 
 --
 -- Дамп данных таблицы `transactions`
@@ -139,7 +176,9 @@ INSERT INTO `transactions` (`tr_id`, `user_id`, `type`, `date`, `amount`, `st_in
 (21, 1, 2, '2017-04-26', 125, NULL, 9, NULL, NULL, NULL),
 (22, 1, 1, '2017-04-10', 246, 3, NULL, NULL, NULL, 'отдали долг'),
 (23, 1, 2, '2017-05-04', 1000, NULL, 9, NULL, NULL, ''),
-(36, 1, 1, '2017-04-28', 3600, 5, NULL, NULL, NULL, '');
+(36, 1, 1, '2017-04-28', 3600, 5, NULL, NULL, NULL, ''),
+(10749, 1, 2, '2017-05-03', 850, NULL, NULL, NULL, 2, 'template'),
+(10750, 1, 1, '2017-05-01', 100, 3, NULL, NULL, NULL, 'template');
 
 -- --------------------------------------------------------
 
@@ -215,7 +254,7 @@ CREATE TABLE IF NOT EXISTS `users_balance` (
 --
 
 INSERT INTO `users_balance` (`id`, `user_id`, `balance`) VALUES
-(3, 1, 3791),
+(3, 1, 3041),
 (4, 5, 1000);
 
 -- --------------------------------------------------------
@@ -271,6 +310,17 @@ INSERT INTO `user_incomes_categories` (`id`, `user_id`, `name`) VALUES
 --
 -- Ограничения внешнего ключа сохраненных таблиц
 --
+
+--
+-- Ограничения внешнего ключа таблицы `templates`
+--
+ALTER TABLE `templates`
+  ADD CONSTRAINT `templates_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  ADD CONSTRAINT `templates_ibfk_2` FOREIGN KEY (`type`) REFERENCES `transactions_type` (`id`),
+  ADD CONSTRAINT `templates_ibfk_3` FOREIGN KEY (`st_income_category`) REFERENCES `standart_incomes_categories` (`id`),
+  ADD CONSTRAINT `templates_ibfk_4` FOREIGN KEY (`st_expence_category`) REFERENCES `standart_expences_categories` (`id`),
+  ADD CONSTRAINT `templates_ibfk_5` FOREIGN KEY (`user_income_category`) REFERENCES `user_incomes_categories` (`id`),
+  ADD CONSTRAINT `templates_ibfk_6` FOREIGN KEY (`user_expence_category`) REFERENCES `user_expences_categories` (`id`);
 
 --
 -- Ограничения внешнего ключа таблицы `transactions`
