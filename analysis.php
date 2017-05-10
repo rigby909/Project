@@ -5,6 +5,7 @@
 		exit;
 	}
 	include('db.php');
+	include('analysis_by_date.php');
 	global $db;
 	$id = $_SESSION['user']['id'];
 
@@ -21,11 +22,18 @@
 		<link rel="stylesheet" href="css/bootstrap-theme.css">
 		<link rel="stylesheet" href="css/bootstrap-responsive.css">
         <link rel="stylesheet" href="css/custom-styles.css">
+		<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>		
 		<script src="js/jquery-1.9.1.js"></script> 
-		<script src="js/bootstrap.js"></script>	
-		<script src="js/analysis.js"></script>
+		<script src="js/bootstrap.js"></script>		
+		<script> 
+			var dates = <?php echo $datesJS; ?>;
+			var names = <?php echo $namesJS; ?>;
+			var amounts = <?php echo $amountsJS; ?>;
+			var categories = <?php echo $categoriesJS; ?>;
+		</script>
     </head>
     <body>
+	<script src="js/analysis.js"></script>
 		<div class="navbar-wrapper">
 			<div class="container-fluid">
 				<nav class="navbar navbar-fixed-top">
@@ -85,30 +93,107 @@
 										<p>По 
 											<input type="date" name="date2" id="date2"class="form-control" value="<?php echo date("Y-m-d");?>" min="2017-01-01" max="<?php echo date("Y-m-d");?>">
 										</p>
-										<input type="button" name="date_transactions" id="date_transactions" class="btn btn-default" value="Показать"/>
 									</div>
-									<div class="form-group" id="by_type"><hr>
-										<h3>По типу: </h3>
-										<select class="form-control" id="incomes_or_expences">
-											<option name="incomes" value="1">Доходы</option>
-											<option name="expences" value="2">Расходы</option>									
-										</select><br>									
-										<input type="button" name="type_transactions" id="type_transactions" class="btn btn-default" value="Показать"/>
-									</div>									
+									<div class="form-group" id="by_type">
+										<h3>Тип платежа: </h3>
+										<div class="radio" name="expence_type" id="expence_type">
+											<label><input type="radio" name="type" value="0" onchange="check()" checked>Любой</label>
+										</div>
+										<div class="radio" name="expence_type" id="expence_type">
+											<label><input type="radio" name="type" value="2" onchange="check()">Расходы</label>
+										</div>
+										<div class="radio" name="income_type" id="income_type">
+											<label><input type="radio" name="type" value="1" onchange="check()">Доходы</label>
+										</div>
+										<script>
+											function check(){
+											  var radio=document.getElementsByName("type");
+											  if (radio[0].checked) {
+												$('#standart_incomes_categories').css('display', 'none');
+												$('#user_incomes_categories').css('display', 'none');
+												$('#standart_expences_categories').css('display', 'none');
+												$('#user_expences_categories').css('display', 'none');
+											  } else if (radio[1].checked){
+												$('#standart_incomes_categories').css('display', 'none');
+												$('#user_incomes_categories').css('display', 'none');
+												$('#standart_expences_categories').css('display', 'inline-block');
+												$('#user_expences_categories').css('display', 'inline-block');
+											  } else if (radio[2].checked){
+												$('#standart_expences_categories').css('display', 'none');
+												$('#user_expences_categories').css('display', 'none');
+												$('#standart_incomes_categories').css('display', 'inline-block');
+												$('#user_incomes_categories').css('display', 'inline-block');
+											 }
+											}
+										</script>
+									</div>	
+									<div class="form-group" style="display:none;" id="standart_incomes_categories">
+										<h3>Выбрать категорию дохода: </h3>
+										<select class="form-control" id="standart_incomes">
+											<option></option>
+											<?php
+												$c = $db->query("SELECT name FROM standart_incomes_categories");
+												while ($data = $c->fetch_assoc()) {
+													echo '<option name="st_incomes_category" value="'.$data['name'].'">'.$data['name'].'</option>';
+												}
+											?>
+										</select>
+									</div>
+									<div class="form-group" style="display:none;" id="user_incomes_categories">
+										<h3>Ваши категории доходов: </h3>
+										<select class="form-control" id="user_incomes">
+											<option></option>
+											<?php
+												$c = $db->query("SELECT name FROM user_incomes_categories WHERE user_id=$id");
+												while ($data = $c->fetch_assoc()) {
+													echo '<option name="u_incomes_category" value="'.$data['name'].'">'.$data['name'].'</option>';
+												}
+											?>
+										</select>
+									</div>										
+									<div class="form-group" style="display:none;" id="standart_expences_categories">
+										<h3>Выбрать категорию расходов: </h3>
+										<select class="form-control" id="standart_expences">
+											<option></option>
+											<?php
+												$c = $db->query("SELECT name FROM standart_expences_categories");
+												while ($data = $c->fetch_assoc()) {
+													echo '<option name="st_expences_category" value="'.$data['name'].'">'.$data['name'].'</option>';
+												}
+											?>
+										</select>
+									</div>								
+									<div class="form-group" style="display:none;" id="user_expences_categories">
+										<h3>Ваши категории расходов: </h3>
+										<select class="form-control" id="user_expences">
+											<option></option>
+											<?php
+												$c = $db->query("SELECT name FROM user_expences_categories WHERE user_id=$id");
+												while ($data = $c->fetch_assoc()) {
+													echo '<option name="u_expences_category" "value="'.$data['name'].'">'.$data['name'].'</option>';
+												}
+											?>
+										</select>
+									</div><br>
+									<input type="button" name="date_analysis" id="date_analysis" class="btn btn-default" value="Показать"/>
 							</div>
 						</div>
 					</div>
 					<div class="col-sm-6">
 						<div class="col-sm-10">
 							<div class="block-content">
-								<h1>Настройте обзор по фильтрам и получайте информацию в режиме онлайн<h1><br>							
+								<h1>Настройте обзор по фильтрам и получайте информацию в режиме онлайн<h1><br>
+								<div id="chart_div"></div>
 							</div>
 						</div>
 					</div>
 				</div>
 				<div class="row">
 					<hr>
-				
+					<div class="col-sm-3"></div>
+					<div class="col-sm-9" id="place">
+					</div>					
+					<div class="col-sm-3"></div>
 				</div>
 			</div>
 		</div>

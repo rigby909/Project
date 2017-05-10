@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Май 08 2017 г., 13:03
+-- Время создания: Май 09 2017 г., 15:58
 -- Версия сервера: 5.5.35-log
 -- Версия PHP: 5.3.27
 
@@ -162,7 +162,7 @@ CREATE TABLE IF NOT EXISTS `transactions` (
   KEY `user_expence_category` (`user_expence_category`),
   KEY `user_id` (`user_id`),
   KEY `user_id_2` (`user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10751 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10752 ;
 
 --
 -- Дамп данных таблицы `transactions`
@@ -178,7 +178,8 @@ INSERT INTO `transactions` (`tr_id`, `user_id`, `type`, `date`, `amount`, `st_in
 (23, 1, 2, '2017-05-04', 1000, NULL, 9, NULL, NULL, ''),
 (36, 1, 1, '2017-04-28', 3600, 5, NULL, NULL, NULL, ''),
 (10749, 1, 2, '2017-05-03', 850, NULL, NULL, NULL, 2, 'template'),
-(10750, 1, 1, '2017-05-01', 100, 3, NULL, NULL, NULL, 'template');
+(10750, 1, 1, '2017-05-01', 100, 3, NULL, NULL, NULL, 'template'),
+(10751, 1, 1, '2017-05-08', 100, 3, NULL, NULL, NULL, 'template');
 
 -- --------------------------------------------------------
 
@@ -254,7 +255,7 @@ CREATE TABLE IF NOT EXISTS `users_balance` (
 --
 
 INSERT INTO `users_balance` (`id`, `user_id`, `balance`) VALUES
-(3, 1, 3041),
+(3, 1, 3141),
 (4, 5, 1000);
 
 -- --------------------------------------------------------
